@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from 'react';
 import './App.css';
 import ChildComponent from './Child';
 import { MyContext } from './MyContext';
-import Test from './Test';
+import ChildTwo from './ChildTwo';
 
 function App() {
   useEffect(() => {
@@ -16,6 +16,7 @@ function App() {
   const inputRef = useRef(null);
 
   const addTask = () => {
+    if (!inputValue) return;
     const newTask = {
       task: inputValue, done: 'not-done'
     };
@@ -35,6 +36,7 @@ function App() {
   }
 
   const handleKeyDown = (event) => {
+    if (!event.target.value) return;
     if (event.keyCode === 13) {
       const newTask = {
         task: event.target.value, status: 'not-done'
@@ -44,9 +46,12 @@ function App() {
     }
   }
 
+  const data = {
+    one: 1,
+    two: 2
+  }
 
   const updateTask = (index) => {
-    
     const updatedTasks = tasks.map((task, i) => index === i ? {...task, status: task.status === 'not-done' ? 'done' : 'not-done' }: task);
     setTask(updatedTasks);
   }
@@ -59,14 +64,14 @@ function App() {
       <ul>
         {
           tasks.map((task, index) => {
-            return <li className={task.status} onClick={() => updateTask(index)} key={index}>{task.task}</li>
+            return <li className={task.status} key={index}><span onClick={() => updateTask(index)}>{task.task}</span></li>
           })
         }
       </ul>
       <MyContext.Provider value={{updateTaskFromChild}}>
         <ChildComponent/>
-        <Test/>
       </MyContext.Provider>
+      <ChildTwo props={data}/>
     </div>
   );
 }
